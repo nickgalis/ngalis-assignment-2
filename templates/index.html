@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KMeans Clustering</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</head>
+<body>
+    <h1>KMeans Clustering Visualization</h1>
+    <div id="controls">
+        <select id="init-method">
+            <option value="random">Random</option>
+            <option value="farthest">Farthest First</option>
+            <option value="kmeans++">KMeans++</option>
+            <option value="manual">Manual</option>
+        </select>
+        <button id="gen-data">Generate Data</button>
+        <button id="step">Step</button>
+        <button id="converge">Converge</button>
+        <button id="reset">Reset</button>
+    </div>
+    <div id="plot"></div>
+</body>
+</html>
