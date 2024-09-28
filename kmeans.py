@@ -19,10 +19,34 @@ def initialize_centroids(data, method, k):
         indices = np.random.choice(data.shape[0], k, replace=False)
         return data[indices]
     elif method == 'farthest':
-        # Implement farthest first initialization
-        pass
+        # Farthest First Traversal initialization
+        centroids = []
+        centroids.append(data[np.random.randint(0, data.shape[0])])
+
+        for _ in range(1, k):
+            distances = np.array([min([np.linalg.norm(x - c) ** 2 for c in centroids]) for x in data])
+            next_index = np.argmax(distances)
+            centroids.append(data[next_index])
+
+        return np.array(centroids)
     elif method == 'kmeans++':
-        # Implement KMeans++ initialization
-        pass
+        # KMeans++ initialization
+        centroids = []
+        centroids.append(data[np.random.randint(0, data.shape[0])])
+
+        for _ in range(1, k):
+            distances = np.array([min([np.linalg.norm(x - c) ** 2 for c in centroids]) for x in data])
+            probabilities = distances / distances.sum()
+            cumulative_probabilities = probabilities.cumsum()
+            r = np.random.rand()
+
+            for j, p in enumerate(cumulative_probabilities):
+                if r < p:
+                    centroids.append(data[j])
+                    break
+
+        return np.array(centroids)
     else:
         raise ValueError("Unknown method")
+
+
