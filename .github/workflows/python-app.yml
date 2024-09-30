@@ -39,5 +39,6 @@ jobs:
 
       - name: Run application
         run: |
-          make run
+          # Run the server in the background
+          Start-Process -NoNewWindow -FilePath "python" -ArgumentList "app.py"; Start-Sleep 10
         shell: pwsh
