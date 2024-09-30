@@ -2,9 +2,11 @@ name: Python Application Workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -15,7 +17,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -28,17 +30,28 @@ jobs:
           if (Test-Path requirements.txt) { pip install -r requirements.txt }
           make install
         shell: pwsh
-
+      
       - name: Lint with flake8
         run: |
-          # stop the build if there are Python syntax errors or undefined names
+          # Stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          # Exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
         shell: pwsh
 
       - name: Run application
         run: |
-          # Run the server in the background
-          Start-Process -NoNewWindow -FilePath "python" -ArgumentList "app.py"; Start-Sleep 10
+          make run &
+          Start-Sleep -Seconds 10
+
+          # Perform a simple check to ensure the application is running
+          try {
+            $response = Invoke-WebRequest -Uri http://localhost:3000 -UseBasicParsing
+            if ($response.StatusCode -ne 200) { throw "Server not responding as expected" }
+          } catch {
+            Throw $_
+          } finally {
+            # Terminate any Flask process
+            Stop-Process -Name "flask" -Force
+          }
         shell: pwsh
