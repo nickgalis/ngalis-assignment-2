@@ -44,14 +44,6 @@ jobs:
           make run &
           Start-Sleep -Seconds 10
 
-          # Perform a simple check to ensure the application is running
-          try {
-            $response = Invoke-WebRequest -Uri http://localhost:3000 -UseBasicParsing
-            if ($response.StatusCode -ne 200) { throw "Server not responding as expected" }
-          } catch {
-            Throw $_
-          } finally {
-            # Terminate any Flask process
-            Stop-Process -Name "flask" -Force
-          }
+          Invoke-WebRequest -Uri http://localhost:3000 -UseBasicParsing
+          
         shell: pwsh
